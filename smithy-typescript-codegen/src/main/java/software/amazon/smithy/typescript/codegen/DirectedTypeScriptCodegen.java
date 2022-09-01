@@ -168,7 +168,6 @@ final class DirectedTypeScriptCodegen
 
         ProtocolGenerator protocolGenerator = directive.context().protocolGenerator();
         SymbolProvider symbolProvider = directive.symbolProvider();
-        List<TypeScriptIntegration> integrations = directive.context().integrations();
         if (protocolGenerator != null) {
             LOGGER.info("Generating serde for protocol " + protocolGenerator.getName() + " on " + service.getId());
             String fileName = Paths.get(CodegenUtils.SOURCE_FOLDER, ProtocolGenerator.PROTOCOLS_FOLDER,
