@@ -46,6 +46,8 @@ import software.amazon.smithy.model.shapes.ServiceShape;
 import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.PaginatedTrait;
 import software.amazon.smithy.model.validation.ValidationEvent;
+import software.amazon.smithy.rulesengine.traits.EndpointRuleSetTrait;
+import software.amazon.smithy.typescript.codegen.endpointsV2.EndpointsV2Generator;
 import software.amazon.smithy.typescript.codegen.integration.ProtocolGenerator;
 import software.amazon.smithy.typescript.codegen.integration.RuntimeClientPlugin;
 import software.amazon.smithy.typescript.codegen.integration.TypeScriptIntegration;
@@ -160,6 +162,7 @@ final class DirectedTypeScriptCodegen
         }
         if (settings.generateClient() || settings.generateServerSdk()) {
             generateCommands(directive);
+            generateEndpointV2(directive);
         }
 
         if (settings.generateServerSdk()) {
@@ -168,7 +171,6 @@ final class DirectedTypeScriptCodegen
 
         ProtocolGenerator protocolGenerator = directive.context().protocolGenerator();
         SymbolProvider symbolProvider = directive.symbolProvider();
-        List<TypeScriptIntegration> integrations = directive.context().integrations();
         if (protocolGenerator != null) {
             LOGGER.info("Generating serde for protocol " + protocolGenerator.getName() + " on " + service.getId());
             String fileName = Paths.get(CodegenUtils.SOURCE_FOLDER, ProtocolGenerator.PROTOCOLS_FOLDER,
@@ -295,6 +297,14 @@ final class DirectedTypeScriptCodegen
                         protocolGenerator, applicationProtocol).run());
             }
         }
+    }
+
+    private void generateEndpointV2(GenerateServiceDirective<TypeScriptCodegenContext, TypeScriptSettings> directive) {
+        if (!directive.shape().hasTrait(EndpointRuleSetTrait.class)) {
+            return;
+        }
+
+        new EndpointsV2Generator(directive.settings(), directive.model(), directive.fileManifest()).run();
     }
 
     private void generateServiceInterface(GenerateServiceDirective<TypeScriptCodegenContext,
