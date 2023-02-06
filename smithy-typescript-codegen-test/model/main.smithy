@@ -312,7 +312,8 @@ structure GetCityImageOutput {
     image: CityImageData,
 }
 
-@streaming
+// TODO: Temporarily making it non-streaming. See https://sim.amazon.com/issues/SMITHY-1422
+//@streaming
 blob CityImageData
 
 @readonly
@@ -338,7 +339,8 @@ structure GetCityAnnouncementsOutput {
     announcements: Announcements
 }
 
-@streaming
+// TODO: Temporarily making it non-streaming. See https://sim.amazon.com/issues/SMITHY-1422
+//@streaming
 union Announcements {
     police: Message,
     fire: Message,
